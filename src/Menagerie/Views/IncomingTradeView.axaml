@@ -1,0 +1,134 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:viewModels="clr-namespace:Menagerie.ViewModels"
+             xmlns:incomingTradeViewModels="clr-namespace:Menagerie.Models.IncomingTradeViewModels"
+             xmlns:icons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+             mc:Ignorable="d"
+             x:Class="Menagerie.Views.IncomingTradeView"
+             x:DataType="viewModels:IncomingTradeViewModel"
+             Background="Transparent">
+    <UserControl.Styles>
+        <Style Selector="Button.actionButton">
+            <Setter Property="Height"
+                    Value="20" />
+            <Setter Property="MaxHeight"
+                    Value="20" />
+            <Setter Property="HorizontalAlignment"
+                    Value="Stretch" />
+            <Setter Property="VerticalAlignment"
+                    Value="Bottom" />
+        </Style>
+        <Style Selector="TextBlock.tooltip">
+            <Setter Property="Foreground"
+                    Value="{StaticResource TextColor}" />
+            <Setter Property="FontSize"
+                    Value="12" />
+        </Style>
+    </UserControl.Styles>
+
+    <Border x:Name="Border"
+            CornerRadius="4"
+            Background="{StaticResource Background1}"
+            BorderBrush="{Binding BorderBrush}"
+            BorderThickness="3"
+            Cursor="Hand"
+            ToolTip.Placement="Top"
+            ToolTip.VerticalOffset="-5"
+            ToolTip.ShowDelay="100"
+            PointerReleased="Border_OnPointerReleased">
+        <ToolTip.Tip>
+            <ItemsRepeater ItemsSource="{Binding TooltipLines}">
+                <ItemsRepeater.Layout>
+                    <StackLayout Orientation="Vertical"
+                                 Spacing="2" />
+                </ItemsRepeater.Layout>
+                <ItemsRepeater.ItemTemplate>
+                    <DataTemplate DataType="incomingTradeViewModels:TooltipLine">
+                        <DockPanel>
+                            <TextBlock Text="{Binding Label}"
+                                       Classes="tooltip"
+                                       VerticalAlignment="Center"
+                                       FontWeight="Bold" />
+                            <TextBlock Classes="tooltip"
+                                       Text="{Binding Value}" />
+                        </DockPanel>
+                    </DataTemplate>
+                </ItemsRepeater.ItemTemplate>
+            </ItemsRepeater>
+        </ToolTip.Tip>
+
+        <Grid RowDefinitions="Auto,*,Auto"
+              ColumnDefinitions="*,*">
+            <Border Grid.Row="0"
+                    Grid.Column="0"
+                    Grid.ColumnSpan="2"
+                    CornerRadius="0,0,0,0"
+                    BorderBrush="{StaticResource Background0}"
+                    BorderThickness="1"
+                    Background="{StaticResource Background0}"
+                    HorizontalAlignment="Stretch">
+                <TextBlock Foreground="{StaticResource TextColor}"
+                           TextAlignment="Center"
+                           VerticalAlignment="Center"
+                           TextWrapping="NoWrap"
+                           TextTrimming="CharacterEllipsis"
+                           Text="{Binding Trade.Item}" />
+            </Border>
+
+            <TextBlock Grid.Row="1"
+                       Grid.Column="0"
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Center"
+                       Text="{Binding Trade.Price.Value}"
+                       FontSize="{Binding PriceQuantityFontSize}"
+                       RenderTransform="{Binding PriceQuantityTransform}"
+                       Foreground="{StaticResource TextColor}" />
+            <Image Grid.Row="1"
+                   Grid.Column="1"
+                   Source="{Binding Trade.Price.CurrencyImageUrl}"
+                   Stretch="Uniform"
+                   VerticalAlignment="Center"
+                   HorizontalAlignment="Center" />
+
+            <Button x:Name="ButtonBusy"
+                    IsVisible="{Binding CanSayBusy}"
+                    Grid.Row="2"
+                    Grid.Column="0"
+                    Classes="hoverAccent actionButton"
+                    Click="ButtonBusy_OnClick">
+                <Button.Content>
+                    <icons:MaterialIcon Kind="Clock" />
+                </Button.Content>
+            </Button>
+            <Button x:Name="ButtonReInvitePlayer"
+                    IsVisible="{Binding !CanSayBusy}"
+                    Grid.Row="2"
+                    Grid.Column="0"
+                    Classes="hoverSuccess actionButton"
+                    Click="ButtonReInvitePlayer_OnClick">
+                <Button.Content>
+                    <icons:MaterialIcon Kind="UserAdd" />
+                </Button.Content>
+            </Button>
+            <Button x:Name="ButtonDenyOffer"
+                    Grid.Row="2"
+                    Grid.Column="1"
+                    Classes="hoverError actionButton"
+                    Click="ButtonDenyOffer_OnClick">
+                <Button.Content>
+                    <icons:MaterialIcon Kind="CloseCircle" />
+                </Button.Content>
+            </Button>
+
+            <icons:MaterialIcon Grid.Row="1"
+                                Grid.Column="1"
+                                IsVisible="{Binding IsPlayerInTheArea}"
+                                Kind="UserCircle"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Bottom"
+                                Foreground="{StaticResource WarningColor}" />
+        </Grid>
+    </Border>
+</UserControl>

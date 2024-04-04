@@ -1,0 +1,62 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:viewModels="clr-namespace:Menagerie.ViewModels"
+        xmlns:icons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+        xmlns:views="clr-namespace:Menagerie.Views"
+        mc:Ignorable="d"
+        x:Class="Menagerie.Windows.IncomingTradesWindow"
+        x:DataType="viewModels:IncomingTradesWindowViewModel"
+        ShowInTaskbar="False"
+        Focusable="False"
+        Background="CornflowerBlue"
+        SystemDecorations="None"
+        Width="500"
+        Height="80"
+        SizeToContent="Width"
+        ShowActivated="False"
+        Topmost="True"
+        Title="Incoming trades"
+        Icon="/Assets/logo.ico">
+    <Grid RowDefinitions="*"
+          ColumnDefinitions="*"
+          Background="DarkRed">
+        <Button x:Name="ButtonRemoveAllTrades"
+                Grid.Row="0"
+                Grid.Column="0"
+                VerticalAlignment="Top"
+                HorizontalAlignment="Left"
+                Height="25"
+                Width="25"
+                Classes="hoverError">
+            <Button.Content>
+                <icons:MaterialIcon Kind="Trash"
+                                    Foreground="{StaticResource TextColor}" />
+            </Button.Content>
+        </Button>
+
+        <Panel x:Name="TradesPanel"
+               Background="Blue"
+               HorizontalAlignment="Stretch"
+               VerticalAlignment="Stretch">
+            <ScrollViewer x:Name="ScrollViewer"
+                          HorizontalAlignment="Stretch"
+                          VerticalScrollBarVisibility="Disabled"
+                          HorizontalScrollBarVisibility="Hidden"
+                          PointerWheelChanged="ScrollViewer_OnPointerWheelChanged">
+                <ItemsRepeater ItemsSource="{Binding Trades}">
+                    <ItemsRepeater.Layout>
+                        <StackLayout Orientation="Horizontal"
+                                     Spacing="5" />
+                    </ItemsRepeater.Layout>
+                    <ItemsRepeater.ItemTemplate>
+                        <DataTemplate x:DataType="viewModels:IncomingTradeViewModel">
+                            <views:IncomingTradeView DataContext="{Binding .}" />
+                        </DataTemplate>
+                    </ItemsRepeater.ItemTemplate>
+                </ItemsRepeater>
+            </ScrollViewer>
+        </Panel>
+    </Grid>
+</Window>
