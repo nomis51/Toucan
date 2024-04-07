@@ -6,4 +6,5 @@ public interface IGameProcessService
     int ProcessId { get; }
 
     bool FocusGameWindow();
+    Task FindProcess();
 }

@@ -141,6 +141,7 @@ public class GameProcessService : IGameProcessService
             if (string.IsNullOrEmpty(location) || !Directory.Exists(location)) return false;
 
             ProcessLocation = location;
+            return true;
         }
         catch (Win32Exception e)
         {
@@ -164,6 +165,7 @@ public class GameProcessService : IGameProcessService
                 if (string.IsNullOrEmpty(location) || !Directory.Exists(location)) return false;
 
                 ProcessLocation = location;
+                return true;
             }
             catch (Win32Exception e2)
             {
@@ -179,7 +181,7 @@ public class GameProcessService : IGameProcessService
             Log.Error("Error while getting 64 bits PoE process location: {Message}", e.Message);
         }
 
-        return false;
+        return true;
     }
 
     #endregion

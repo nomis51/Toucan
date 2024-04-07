@@ -11,21 +11,21 @@ public class IncomingTradeParser : Parser<IncomingTrade>
     public IncomingTradeParser() : base(
         new Regex("@From .+: Hi, (I would|I'd) like to buy your .+ (listed for|for my) [0-9\\.]+ .+ in .+",
             RegexOptions.Compiled | RegexOptions.IgnoreCase),
-        new List<Token>
+        new List<Token<IncomingTrade>>
         {
             // (stash tab "~price 1 chaos"; position: left 8, top 7)
             new("@From ", false),
             new("<", false, breakOnFail: false),
             new("> ", false, breakOnFail: false),
-            new(": Hi, ", true, "Player", typeof(string)),
-            new("I would", false, "", null, "I'd"),
+            new(": Hi, ", true, (e, v) => e.Player = v, typeof(string)),
+            new("I would", false, (e, v) => { }, null, "I'd"),
             new(" like to buy your ", false),
-            new(" listed for ", true, "ItemName", typeof(string), " for my "),
-            new(" in ", true, "PriceStr", typeof(double)),
-            new(" (stash tab \"", true, "League", typeof(string)),
-            new("\"; position: left ", true, "StashTab", typeof(string)),
-            new(", top ", true, "LeftStr", typeof(string)),
-            new(")", true, "TopStr", typeof(string))
+            new(" listed for ", true, (e, v) => e.Item = new Item(v), typeof(string), " for my "),
+            new(" in ", true, (e, v) => e.Price = new Price(v), typeof(double)),
+            new(" (stash tab \"", true, (e, v) => e.League = v, typeof(string)),
+            new("\"; position: left ", true, (e, v) => e.Location.StashTab = v, typeof(string)),
+            new(", top ", true, (e, v) => e.Location.Left = int.TryParse(v, out var left) ? left : 0, typeof(string)),
+            new(")", true, (e, v) => e.Location.Top = int.TryParse(v, out var top) ? top : 0, typeof(string))
         }
     )
     {

@@ -9,7 +9,7 @@ public class FsService : IFsService
     public string AppFolder => Path.GetFullPath(
         Path.Join(
             Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
-            nameof(Menagerie)
+            ".menagerie"
         )
     );
 

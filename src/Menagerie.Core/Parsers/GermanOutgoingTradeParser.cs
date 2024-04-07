@@ -11,13 +11,13 @@ public class GermanOutgoingTradeParser : Parser<OutgoingTrade>
     public GermanOutgoingTradeParser() : base(
         new Regex("@.+ Hi, ich möchte dein .+ für mein [0-9\\.]+ .+ in der .+\\-Liga kaufen\\.",
             RegexOptions.Compiled | RegexOptions.IgnoreCase),
-        new List<Token>
+        new List<Token<OutgoingTrade>>
         {
             new("@", false),
-            new(" Hi, ich möchte dein ", true, "Player", typeof(string)),
-            new(" für mein ", true, "ItemName", typeof(string)),
-            new(" in der ", true, "PriceStr", typeof(string)),
-            new("-Liga kaufen.", true, "League", typeof(string)),
+            new(" Hi, ich möchte dein ", true, (e, v) => e.Player = v, typeof(string)),
+            new(" für mein ", true, (e, v) => e.Item = new Item(v), typeof(string)),
+            new(" in der ", true, (e, v) => e.Price = new Price(v), typeof(string)),
+            new("-Liga kaufen.", true, (e, v) => e.League = v, typeof(string)),
         }
     )
     {

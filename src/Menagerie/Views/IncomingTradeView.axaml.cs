@@ -1,3 +1,4 @@
+using System;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Menagerie.Core.Helpers;
@@ -54,6 +55,12 @@ public partial class IncomingTradeView : ViewBase<IncomingTradeViewModel>
     private void ButtonDenyOffer_OnClick(object? sender, RoutedEventArgs e)
     {
         Dispatch(vm => vm?.SendDenyOffer());
+    }
+
+    private void OnInitialized(object? sender, EventArgs e)
+    {
+        Width = ViewModel!.Size;
+        Height = ViewModel!.Size * 1.1;
     }
 
     #endregion

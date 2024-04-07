@@ -1,19 +1,23 @@
+using System.Linq.Expressions;
+
 namespace Menagerie.Core.Models.Parsing;
 
-public class Token
+public class Token<T>
+    where T : class
 {
     public string Value { get; }
-    public string PropertyName { get; }
+    public Action<T, string>? SetProperty { get; }
     public string AlternateValue { get; }
     public bool IsUseful { get; }
     public bool BreakOnFail { get; }
     public Type? TargetType { get; }
     public bool EndOfString { get; }
 
-    public Token(string value, bool isUseful, string propertyName = "", Type? targetType = null, string alternateValue = "", bool breakOnFail = true, bool endOfString = false)
+    public Token(string value, bool isUseful, Action<T, string>? setProperty = null, Type? targetType = null, string alternateValue = "",
+        bool breakOnFail = true, bool endOfString = false)
     {
         Value = value;
-        PropertyName = propertyName;
+        SetProperty = setProperty;
         AlternateValue = alternateValue;
         IsUseful = isUseful;
         BreakOnFail = breakOnFail;

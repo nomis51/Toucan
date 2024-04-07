@@ -1,6 +1,9 @@
+using System.Runtime.InteropServices;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Input;
+using Avalonia.Interactivity;
+using Menagerie.Core.WinApi;
 using Menagerie.ViewModels;
 
 namespace Menagerie.Windows;
@@ -12,14 +15,24 @@ public partial class IncomingTradesWindow : WindowBase<IncomingTradesWindowViewM
     public IncomingTradesWindow()
     {
         InitializeComponent();
+
+        // TitleBar.ExtendsContentIntoTitleBar = true;
+        // TitleBar.TitleBarHitTestType = TitleBarHitTestType.Simple;
     }
 
     #endregion
 
     #region Private methods
 
+    private void OnLoaded(object? sender, RoutedEventArgs e)
+    {
+        AdjustPosition();
+    }
+
     private void AdjustPosition()
     {
+        AdjustWindow();
+
         if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
             // Left hud and right hud are using about 29% of the screen width
@@ -31,9 +44,9 @@ public partial class IncomingTradesWindow : WindowBase<IncomingTradesWindowViewM
             var size = desktop.MainWindow!.Screens.Primary!.Bounds.Size;
             Position = new PixelPoint((int)(size.Width * .278), (int)(size.Height * .962 - Height));
             Height = (int)(size.Height * .092);
-            Width = 25; //(int)(size.Width * .444);
+            Width = (int)(size.Width * .444);
             MaxWidth = (int)(size.Width * .444);
-            // ViewModel?.SetOfferSize((int)(size.Height * .092 - ButtonRemoveAllOffers.Height));
+            ViewModel?.SetTradeSize((int)(size.Height * .092 - ButtonRemoveAllTrades.Height));
             // Panel.Width = 0;
         }
     }
@@ -50,6 +63,27 @@ public partial class IncomingTradesWindow : WindowBase<IncomingTradesWindowViewM
                 ScrollViewer.PageRight();
                 break;
         }
+    }
+
+    private void AdjustWindow()
+    {
+        if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) return;
+
+        var hwnd = GetTopLevel(this)!.TryGetPlatformHandle()!.Handle;
+
+        var windowStyle = User32.GetWindowLong(hwnd, User32.GWL_STYLE);
+        windowStyle &= ~(User32.WS_CAPTION | User32.WS_THICKFRAME | User32.WS_MINIMIZEBOX | User32.WS_MAXIMIZEBOX | User32.WS_SYSMENU);
+        _ = User32.SetWindowLong(hwnd, User32.GWL_STYLE, windowStyle);
+
+        var windowExStyle = User32.GetWindowLong(hwnd, User32.GWL_EX_STYLE);
+        windowExStyle &= ~(User32.WS_EX_DLGMODALFRAME | User32.WS_EX_CLIENTEDGE | User32.WS_EX_STATICEDGE);
+        _ = User32.SetWindowLong(hwnd, User32.GWL_EX_STYLE, windowExStyle);
+    }
+
+
+    private void ButtonRemoveAllTrades_OnClick(object? sender, RoutedEventArgs e)
+    {
+        ViewModel?.RemoveAllTrades();
     }
 
     #endregion

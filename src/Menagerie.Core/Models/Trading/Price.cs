@@ -1,3 +1,4 @@
+using System.Drawing;
 using Newtonsoft.Json;
 
 namespace Menagerie.Core.Models.Trading;
@@ -11,7 +12,20 @@ public class Price
     public string Currency { get; set; } = string.Empty;
 
     [JsonProperty("currencyImageUrl")]
-    public string CurrencyImageUrl { get; set; } = string.Empty;
+    public Task<Bitmap?> CurrencyImage { get; set; } = null!;
+
+    public Price()
+    {
+    }
+
+    public Price(string text)
+    {
+        var parts = text.Split(" ", StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
+        if (parts.Length != 2) return;
+
+        Value = double.TryParse(parts[0], out var price) ? price : 1;
+        Currency = string.Join(" ", parts.Skip(1));
+    }
 
     public override string ToString()
     {

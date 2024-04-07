@@ -111,6 +111,7 @@ public class AppService
         _gameChatService = servicesDependencies.GameChatService;
 
         LogsHelper.Initialize();
+        _ = _gameProcessService.FindProcess();
     }
 
     public Task<Settings> GetSettings()
@@ -157,15 +158,14 @@ public class AppService
 
     public void NewIncomingTradeReceived(IncomingTrade trade)
     {
-        trade.Price.CurrencyImageUrl = CurrencyHelper.GetCurrencyImageLink(trade.Price.Currency);
+        trade.Price.CurrencyImage = ImageHelper.LoadFromWeb(CurrencyHelper.GetCurrencyImageLink(trade.Price.Currency));
         // TODO: price conversions
-
         NewIncomingTradeEventInvoke(trade);
     }
 
     public void NewOutgoingTradeReceived(OutgoingTrade trade)
     {
-        trade.Price.CurrencyImageUrl = CurrencyHelper.GetCurrencyImageLink(trade.Price.Currency);
+        trade.Price.CurrencyImage = ImageHelper.LoadFromWeb(CurrencyHelper.GetCurrencyImageLink(trade.Price.Currency));
         // TODO: price conversions
 
         NewOutgoingTradeEventInvoke(trade);

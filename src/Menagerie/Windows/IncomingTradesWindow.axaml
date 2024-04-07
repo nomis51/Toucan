@@ -9,18 +9,19 @@
         x:Class="Menagerie.Windows.IncomingTradesWindow"
         x:DataType="viewModels:IncomingTradesWindowViewModel"
         ShowInTaskbar="False"
+        ShowActivated="False"
         Focusable="False"
-        Background="CornflowerBlue"
+        Topmost="True"
         SystemDecorations="None"
+        Background="Transparent"
         Width="500"
         Height="80"
         SizeToContent="Width"
-        ShowActivated="False"
-        Topmost="True"
         Title="Incoming trades"
-        Icon="/Assets/logo.ico">
+        Icon="/Assets/logo.ico"
+        Loaded="OnLoaded">
     <Grid RowDefinitions="*"
-          ColumnDefinitions="*"
+          ColumnDefinitions="*,*"
           Background="DarkRed">
         <Button x:Name="ButtonRemoveAllTrades"
                 Grid.Row="0"
@@ -29,7 +30,7 @@
                 HorizontalAlignment="Left"
                 Height="25"
                 Width="25"
-                Classes="hoverError">
+                Classes="hoverError" Click="ButtonRemoveAllTrades_OnClick">
             <Button.Content>
                 <icons:MaterialIcon Kind="Trash"
                                     Foreground="{StaticResource TextColor}" />
@@ -37,6 +38,8 @@
         </Button>
 
         <Panel x:Name="TradesPanel"
+               Grid.Row="0"
+               Grid.Column="1"
                Background="Blue"
                HorizontalAlignment="Stretch"
                VerticalAlignment="Stretch">
@@ -52,7 +55,7 @@
                     </ItemsRepeater.Layout>
                     <ItemsRepeater.ItemTemplate>
                         <DataTemplate x:DataType="viewModels:IncomingTradeViewModel">
-                            <views:IncomingTradeView DataContext="{Binding .}" />
+                            <views:IncomingTradeView Content="{Binding .}" />
                         </DataTemplate>
                     </ItemsRepeater.ItemTemplate>
                 </ItemsRepeater>

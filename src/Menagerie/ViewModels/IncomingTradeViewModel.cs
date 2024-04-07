@@ -74,7 +74,7 @@ public class IncomingTradeViewModel : ViewModelBase
         set => this.RaiseAndSetIfChanged(ref _isPlayerInTheArea, value);
     }
 
-    public int OfferSize;
+    public int Size;
 
     #endregion
 
@@ -83,7 +83,7 @@ public class IncomingTradeViewModel : ViewModelBase
     public IncomingTradeViewModel(Trade trade, int size)
     {
         Trade = trade;
-        OfferSize = size;
+        Size = size;
 
         GenerateTooltip();
 

@@ -1,21 +1,24 @@
+using System.Linq.Expressions;
 using System.Text.RegularExpressions;
 using Menagerie.Core.Models.Parsing;
 using Menagerie.Core.Parsers.Abstractions;
+using PropertyInfo = System.Reflection.PropertyInfo;
 
 namespace Menagerie.Core.Parsers;
 
 public abstract class Parser<T> : IParser
+    where T : class
 {
     #region Members
 
     private readonly Regex _regexCanParse;
-    private readonly List<Token> _tokens;
+    private readonly List<Token<T>> _tokens;
 
     #endregion
 
     #region Constructors
 
-    protected Parser(Regex canParse, List<Token> tokens)
+    protected Parser(Regex canParse, List<Token<T>> tokens)
     {
         _regexCanParse = canParse;
         _tokens = tokens;
@@ -75,11 +78,12 @@ public abstract class Parser<T> : IParser
             {
                 offset = text.Length - index;
             }
+
             text = text[(index + offset)..];
 
-            if (!token.IsUseful || token.TargetType is null) continue;
+            if (!token.IsUseful || token.TargetType is null || returnValue is null) continue;
 
-            returnValue.GetType().GetProperty(token.PropertyName)?.SetValue(returnValue, value);
+            token.SetProperty?.Invoke(returnValue, value);
         }
 
         return returnValue;

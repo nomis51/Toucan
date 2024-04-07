@@ -8,7 +8,8 @@
              mc:Ignorable="d"
              x:Class="Menagerie.Views.IncomingTradeView"
              x:DataType="viewModels:IncomingTradeViewModel"
-             Background="Transparent">
+             Background="Transparent"
+             Initialized="OnInitialized">
     <UserControl.Styles>
         <Style Selector="Button.actionButton">
             <Setter Property="Height"
@@ -77,20 +78,22 @@
                            Text="{Binding Trade.Item}" />
             </Border>
 
+            <Image Grid.Row="1"
+                   Grid.Column="0"
+                   Grid.ColumnSpan="2"
+                   Source="{Binding Trade.Price.CurrencyImage^}"
+                   Stretch="Uniform"
+                   VerticalAlignment="Center"
+                   HorizontalAlignment="Center" />
             <TextBlock Grid.Row="1"
                        Grid.Column="0"
-                       HorizontalAlignment="Center"
-                       VerticalAlignment="Center"
+                       Grid.ColumnSpan="2"
+                       HorizontalAlignment="Right"
+                       VerticalAlignment="Bottom"
                        Text="{Binding Trade.Price.Value}"
                        FontSize="{Binding PriceQuantityFontSize}"
                        RenderTransform="{Binding PriceQuantityTransform}"
                        Foreground="{StaticResource TextColor}" />
-            <Image Grid.Row="1"
-                   Grid.Column="1"
-                   Source="{Binding Trade.Price.CurrencyImageUrl}"
-                   Stretch="Uniform"
-                   VerticalAlignment="Center"
-                   HorizontalAlignment="Center" />
 
             <Button x:Name="ButtonBusy"
                     IsVisible="{Binding CanSayBusy}"

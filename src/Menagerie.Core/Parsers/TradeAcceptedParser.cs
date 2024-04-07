@@ -10,7 +10,7 @@ public class TradeAcceptedParser : Parser<TradeAcceptedEvent>
 
     public TradeAcceptedParser() : base(
         new Regex("Trade accepted", RegexOptions.Compiled | RegexOptions.IgnoreCase),
-        new List<Token>()
+        new List<Token<TradeAcceptedEvent>>()
     )
     {
     }

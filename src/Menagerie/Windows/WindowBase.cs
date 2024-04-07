@@ -1,12 +1,12 @@
 using System;
 using System.Threading.Tasks;
+using Avalonia.Controls;
 using Avalonia.Threading;
-using FluentAvalonia.UI.Windowing;
 using Menagerie.ViewModels;
 
 namespace Menagerie.Windows;
 
-public class WindowBase<T> : AppWindow
+public class WindowBase<T> : Window
     where T : ViewModelBase
 {
     #region Props

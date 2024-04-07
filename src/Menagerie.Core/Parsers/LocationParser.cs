@@ -8,10 +8,10 @@ public class LocationParser : Parser<LocationChangeEvent>
 {
     public LocationParser() : base(
         new Regex(": You have entered .+\\.", RegexOptions.Compiled | RegexOptions.IgnoreCase),
-        new List<Token>
+        new List<Token<LocationChangeEvent>>
         {
             new(": You have entered ", false),
-            new (".", true, "Location", typeof(string))
+            new(".", true, (e, v) => e.Location = v, typeof(string))
         }
     )
     {

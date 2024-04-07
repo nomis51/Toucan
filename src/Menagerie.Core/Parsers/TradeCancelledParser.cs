@@ -10,7 +10,7 @@ public class TradeCancelledParser : Parser<TradeCancelledEvent>
 
     public TradeCancelledParser() : base(
         new Regex("Trade cancelled", RegexOptions.Compiled | RegexOptions.IgnoreCase),
-        new List<Token>()
+        new List<Token<TradeCancelledEvent>>()
     )
     {
     }
