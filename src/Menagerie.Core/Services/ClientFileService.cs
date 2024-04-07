@@ -51,7 +51,7 @@ public class ClientFileService : IClientFileService
 
                     foreach (var line in newLines)
                     {
-                        // AppService.Instance.NewClientFileLine(line);
+                        AppService.Instance.ClientFileLineFound(line);
                     }
                 }
                 catch (Exception e)

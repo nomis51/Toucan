@@ -9,4 +9,9 @@ public class Item
 
     [JsonProperty("quantity")]
     public int Quantity { get; set; } = 1;
+
+    public override string ToString()
+    {
+        return $"{Quantity} {Name}";
+    }
 }

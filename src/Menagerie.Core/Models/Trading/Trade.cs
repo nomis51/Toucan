@@ -29,6 +29,9 @@ public abstract class Trade
     [JsonProperty("league")]
     public string League { get; set; } = string.Empty;
 
+    [JsonProperty("whisper")]
+    public string Whisper { get; set; } = string.Empty;
+
     [JsonIgnore]
     public TradeState State { get; set; } = TradeState.Initial;
 }

@@ -12,4 +12,9 @@ public class Price
 
     [JsonProperty("currencyImageUrl")]
     public string CurrencyImageUrl { get; set; } = string.Empty;
+
+    public override string ToString()
+    {
+        return $"{Value} {Currency}";
+    }
 }

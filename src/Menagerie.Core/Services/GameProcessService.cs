@@ -13,7 +13,8 @@ public class GameProcessService : IGameProcessService
 
     private const int ProcessCheckInterval = 5000;
 
-    private readonly string[] _processNames = {
+    private readonly string[] _processNames =
+    {
         "PathOfExile",
         "PathOfExile_Steam",
         "PathOfExile_x64",
@@ -36,7 +37,7 @@ public class GameProcessService : IGameProcessService
     {
         ProcessId = 0;
         ProcessLocation = string.Empty;
-        
+
         return Task.Run(() =>
         {
             while (true)
@@ -51,13 +52,50 @@ public class GameProcessService : IGameProcessService
 
                         ProcessId = process.Id;
                         WatchProcess();
-                        
+
                         AppService.Instance.GameProcessFound();
                         return;
                     }
                 }
             }
         });
+    }
+
+    public bool FocusGameWindow()
+    {
+        if (ProcessId == 0) return false;
+
+        try
+        {
+            var process = Process.GetProcessById(ProcessId);
+            if (process is null || process.HasExited) return false;
+
+            if (IsGameWindowFocused()) return true;
+
+            var noTry = 0;
+            while (!(User32.ShowWindow(process.MainWindowHandle, 5) &&
+                     User32.SetForegroundWindow(process.MainWindowHandle) &&
+                     IsGameWindowFocused()) && noTry < 3)
+            {
+                ++noTry;
+            }
+
+            return noTry < 3;
+        }
+        catch (Exception)
+        {
+            return false;
+        }
+    }
+
+    public bool IsGameWindowFocused(int delay = 50)
+    {
+        var process = Process.GetProcessById(ProcessId);
+        if (process is null || process.HasExited) return false;
+
+        Thread.Sleep(delay);
+        var current = User32.GetForegroundWindow();
+        return current == process.MainWindowHandle;
     }
 
     #endregion

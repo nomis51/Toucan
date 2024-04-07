@@ -87,9 +87,9 @@ public class IncomingTradeViewModel : ViewModelBase
 
         GenerateTooltip();
 
-        AppService.PlayerJoined += Events_OnPlayerJoined;
-        AppService.TradeAccepted += Events_OnTradeAccepted;
-        AppService.TradeCancelled += Events_OnTradeCancelled;
+        AppService.OnPlayerJoined += Events_OnPlayerJoined;
+        AppService.OnTradeAccepted += Events_OnTradeAccepted;
+        AppService.OnTradeCancelled += Events_OnTradeCancelled;
     }
 
     #endregion

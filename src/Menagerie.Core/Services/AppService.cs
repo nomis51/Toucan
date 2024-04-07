@@ -1,4 +1,5 @@
 using Menagerie.Core.Helpers;
+using Menagerie.Core.Models.Setting;
 using Menagerie.Core.Models.Trading;
 using Menagerie.Core.Services.Abstractions;
 
@@ -35,8 +36,8 @@ public class AppService
 
     public delegate void TradeAcceptedEvent();
 
-    public static event TradeAcceptedEvent? TradeAccepted;
-    public static void TradeAcceptedEventInvoke() => TradeAccepted?.Invoke();
+    public static event TradeAcceptedEvent? OnTradeAccepted;
+    public static void TradeAcceptedEventInvoke() => OnTradeAccepted?.Invoke();
 
     #endregion
 
@@ -44,8 +45,8 @@ public class AppService
 
     public delegate void TradeCancelledEvent();
 
-    public static event TradeCancelledEvent? TradeCancelled;
-    public static void TradeCancelledEventInvoke() => TradeCancelled?.Invoke();
+    public static event TradeCancelledEvent? OnTradeCancelled;
+    public static void TradeCancelledEventInvoke() => OnTradeCancelled?.Invoke();
 
     #endregion
 
@@ -53,8 +54,8 @@ public class AppService
 
     public delegate void PlayerJoinedEvent(string player);
 
-    public static event PlayerJoinedEvent? PlayerJoined;
-    public static void PlayerJoinedEventInvoke(string player) => PlayerJoined?.Invoke(player);
+    public static event PlayerJoinedEvent? OnPlayerJoined;
+    public static void PlayerJoinedEventInvoke(string player) => OnPlayerJoined?.Invoke(player);
 
     #endregion
 
@@ -62,8 +63,8 @@ public class AppService
 
     public delegate void NewIncomingTradeEvent(IncomingTrade trade);
 
-    public static event NewIncomingTradeEvent? NewIncomingTrade;
-    public static void NewIncomingTradeEventInvoke(IncomingTrade offer) => NewIncomingTrade?.Invoke(offer);
+    public static event NewIncomingTradeEvent? OnNewIncomingTrade;
+    public static void NewIncomingTradeEventInvoke(IncomingTrade offer) => OnNewIncomingTrade?.Invoke(offer);
 
     #endregion
 
@@ -71,8 +72,8 @@ public class AppService
 
     public delegate void NewOutgoingTradeEvent(OutgoingTrade trade);
 
-    public static event NewOutgoingTradeEvent? NewOutgoingTrade;
-    public static void NewOutgoingTradeEventInvoke(OutgoingTrade offer) => NewOutgoingTrade?.Invoke(offer);
+    public static event NewOutgoingTradeEvent? OnNewOutgoingTrade;
+    public static void NewOutgoingTradeEventInvoke(OutgoingTrade offer) => OnNewOutgoingTrade?.Invoke(offer);
 
     #endregion
 
@@ -80,19 +81,21 @@ public class AppService
 
     public delegate void LocationUpdatedEvent(string location);
 
-    public static event LocationUpdatedEvent? LocationUpdated;
-    public static void LocationUpdatedEventInvoke(string location) => LocationUpdated?.Invoke(location);
+    public static event LocationUpdatedEvent? OnLocationUpdated;
+    public static void LocationUpdatedEventInvoke(string location) => OnLocationUpdated?.Invoke(location);
 
     #endregion
 
     #endregion
-    
+
     #region Services
 
     private IFsService _fsService = null!;
     private IGameProcessService _gameProcessService = null!;
     private IClientFileService _clientFileService = null!;
     private ITextParserService _textParserService = null!;
+    private ISettingsService _settingsService = null!;
+    private IGameChatService _gameChatService = null!;
 
     #endregion
 
@@ -104,9 +107,20 @@ public class AppService
         _gameProcessService = servicesDependencies.GameProcessService;
         _clientFileService = servicesDependencies.ClientFileService;
         _textParserService = servicesDependencies.TextParserService;
-        
+        _settingsService = servicesDependencies.SettingsService;
+        _gameChatService = servicesDependencies.GameChatService;
+
         LogsHelper.Initialize();
-        // TODO: initialize keyboardHelper
+    }
+
+    public Task<Settings> GetSettings()
+    {
+        return _settingsService.GetSettings();
+    }
+
+    public Task SaveSettings(Settings settings)
+    {
+        return _settingsService.SaveSettings(settings);
     }
 
     public string GetLogsFolder()
@@ -117,6 +131,16 @@ public class AppService
     public string GetClientFilePath()
     {
         return _fsService.ClientFilePath;
+    }
+
+    public string GetAppFolder()
+    {
+        return _fsService.AppFolder;
+    }
+
+    public bool FocusGameWindow()
+    {
+        return _gameProcessService.FocusGameWindow();
     }
 
     public void GameProcessFound()
@@ -131,50 +155,67 @@ public class AppService
         _textParserService.ParseClientFileLine(line);
     }
 
+    public void NewIncomingTradeReceived(IncomingTrade trade)
+    {
+        trade.Price.CurrencyImageUrl = CurrencyHelper.GetCurrencyImageLink(trade.Price.Currency);
+        // TODO: price conversions
+
+        NewIncomingTradeEventInvoke(trade);
+    }
+
+    public void NewOutgoingTradeReceived(OutgoingTrade trade)
+    {
+        trade.Price.CurrencyImageUrl = CurrencyHelper.GetCurrencyImageLink(trade.Price.Currency);
+        // TODO: price conversions
+
+        NewOutgoingTradeEventInvoke(trade);
+    }
+
+
     public void SendBusyWhisper(Trade trade)
     {
-        
+        _ = _gameChatService.SendBusyWhisper(trade);
     }
 
     public void PrepareToSendWhisper(Trade trade)
     {
-        
+        _ = _gameChatService.PrepareToSendWhisper(trade);
     }
 
     public void SendSoldWhisper(Trade trade)
     {
-        
+        _ = _gameChatService.SendSoldWhisper(trade);
     }
 
     public void SendStillInterestedWhisper(Trade trade)
     {
-        
+        _ = _gameChatService.SendStillInterestedWhisper(trade);
     }
 
     public void SendInviteCommand(Trade trade)
     {
-        
+        _ = _gameChatService.SendInvite(trade);
     }
 
     public void SendReInviteCommand(Trade trade)
     {
-        
+        _ = _gameChatService.SendReInvite(trade);
     }
 
     public void SendKickCommand(Trade trade)
     {
-        
+        _ = _gameChatService.SendKick(trade);
     }
 
     public void SendTradeRequestCommand(Trade trade)
     {
-        
+        _ = _gameChatService.SendTradeRequest(trade);
     }
 
     public void SendThanksWhisper(Trade trade)
     {
-        
+        _ = _gameChatService.SendThanksWhisper(trade);
     }
-    
+
     #endregion
 }
