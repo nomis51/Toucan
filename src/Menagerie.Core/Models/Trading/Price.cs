@@ -21,10 +21,19 @@ public class Price
     public Price(string text)
     {
         var parts = text.Split(" ", StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
-        if (parts.Length != 2) return;
+        if (parts.Length == 0) return;
 
-        Value = double.TryParse(parts[0], out var price) ? price : 1;
-        Currency = string.Join(" ", parts.Skip(1));
+        if (parts.Length > 1)
+        {
+            var ok = int.TryParse(parts[0], out var value);
+            Value = ok ? value : 1;
+            Currency = ok ? string.Join(" ", parts.Skip(1)) : text;
+        }
+        else
+        {
+            Value = 1;
+            Currency = text;
+        }
     }
 
     public override string ToString()
