@@ -1,30 +1,37 @@
 using System;
 using System.Collections.ObjectModel;
 using System.Globalization;
+using System.Threading.Tasks;
 using Avalonia;
+using Avalonia.Layout;
 using Avalonia.Media;
+using Avalonia.Media.Imaging;
 using Avalonia.Media.Transformation;
 using Menagerie.Core.Enums;
 using Menagerie.Core.Models.Trading;
 using Menagerie.Core.Services;
+using Menagerie.Enums;
+using Menagerie.Helpers;
 using Menagerie.Models.IncomingTradeViewModels;
+using Menagerie.Services;
 using ReactiveUI;
 
 namespace Menagerie.ViewModels;
 
 public class IncomingTradeViewModel : ViewModelBase
 {
-     #region Events
+    #region Events
 
     public delegate void RemovedEvent(Guid id);
 
-    public event RemovedEvent? Removed;
+    public event RemovedEvent? OnRemoved;
 
     #endregion
 
     #region Props
 
     public Trade Trade { get; }
+    public Task<Bitmap?> CurrencyImage => ImageHelper.LoadFromWeb(Trade.Price.CurrencyImageUrl);
 
     public int PriceQuantityFontSize
     {
@@ -36,11 +43,11 @@ public class IncomingTradeViewModel : ViewModelBase
 
             return str.Length switch
             {
-                1 => 24,
+                1 => 28,
                 2 when !hasDot => 22,
                 2 => 21,
-                3 when !hasDot => 18,
-                3 => 17,
+                3 when !hasDot => 17,
+                3 => 16,
                 4 when !hasDot => 15,
                 4 => 13,
                 _ => 1
@@ -48,7 +55,11 @@ public class IncomingTradeViewModel : ViewModelBase
         }
     }
 
-    public ITransform? PriceQuantityTransform => PriceQuantityFontSize <= 13 ? TransformOperations.Parse("rotate(-35deg)") : null;
+    public int PriceQuantityColspan => PriceQuantityFontSize <= 15 ? 2 : 1;
+    public int PriceQuantityColumn => PriceQuantityFontSize <= 15 ? 0 : 1;
+
+    public HorizontalAlignment PriceQuantityHorizontalAlignment =>
+        PriceQuantityFontSize <= 15 ? HorizontalAlignment.Right : HorizontalAlignment.Center;
 
     public IBrush BorderBrush
     {
@@ -98,6 +109,8 @@ public class IncomingTradeViewModel : ViewModelBase
 
     public void DoNextAction()
     {
+        AudioService.Instance.PlayEffect(AudioEffect.Click);
+        
         if (!Trade.State.HasFlag(TradeState.PlayerInvited))
         {
             SendInvitePlayer();
@@ -112,6 +125,8 @@ public class IncomingTradeViewModel : ViewModelBase
 
     public void SayBusy()
     {
+        AudioService.Instance.PlayEffect(AudioEffect.Click);
+        
         Trade.State &= ~TradeState.Initial;
         Trade.State |= TradeState.Busy;
         this.RaisePropertyChanged(nameof(BorderBrush));
@@ -121,17 +136,23 @@ public class IncomingTradeViewModel : ViewModelBase
 
     public void Whisper()
     {
+        AudioService.Instance.PlayEffect(AudioEffect.Click);
+        
         AppService.Instance.PrepareToSendWhisper(Trade);
     }
 
     public void SaySold()
     {
+        AudioService.Instance.PlayEffect(AudioEffect.Click);
+        
         AppService.Instance.SendSoldWhisper(Trade);
         SendDenyOffer();
     }
 
     public void AskStillInterested()
     {
+        AudioService.Instance.PlayEffect(AudioEffect.Click);
+        
         Trade.State &= ~TradeState.Initial;
         Trade.State |= TradeState.StillInterested;
         this.RaisePropertyChanged(nameof(BorderBrush));
@@ -141,6 +162,8 @@ public class IncomingTradeViewModel : ViewModelBase
 
     public void SendInvitePlayer()
     {
+        AudioService.Instance.PlayEffect(AudioEffect.Click);
+        
         Trade.State &= ~TradeState.Initial;
 
         if (!Trade.State.HasFlag(TradeState.PlayerInvited))
@@ -158,15 +181,17 @@ public class IncomingTradeViewModel : ViewModelBase
 
     public void SendDenyOffer()
     {
-        Trade.State = TradeState.Done;
-        this.RaisePropertyChanged(nameof(BorderBrush));
-
+        AudioService.Instance.PlayEffect(AudioEffect.Click);
+        
         if (Trade.State.HasFlag(TradeState.PlayerInvited))
         {
             AppService.Instance.SendKickCommand(Trade);
         }
 
-        Removed?.Invoke(Trade.Id);
+        Trade.State = TradeState.Done;
+        this.RaisePropertyChanged(nameof(BorderBrush));
+
+        OnRemoved?.Invoke(Trade.Id);
     }
 
     #endregion
@@ -194,7 +219,7 @@ public class IncomingTradeViewModel : ViewModelBase
     {
         if (!Trade.State.HasFlag(TradeState.Trading)) return;
 
-        AppService.Instance.SendThanksWhisper(Trade);
+        AppService.Instance.SendThanksWhisper(Trade, true);
         SendDenyOffer();
     }
 
@@ -203,8 +228,11 @@ public class IncomingTradeViewModel : ViewModelBase
         if (IsPlayerInTheArea) return;
         if (Trade.Player != player || Trade.State.HasFlag(TradeState.PlayerJoined)) return;
 
+        AudioService.Instance.PlayEffect(AudioEffect.PlayerJoined);
+        
         Trade.State &= ~TradeState.StillInterested;
         Trade.State |= TradeState.PlayerJoined;
+        IsPlayerInTheArea = true;
         this.RaisePropertyChanged(nameof(BorderBrush));
     }
 

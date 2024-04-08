@@ -45,7 +45,7 @@ public partial class IncomingTradesWindow : WindowBase<IncomingTradesWindowViewM
             Position = new PixelPoint((int)(size.Width * .278), (int)(size.Height * .962 - Height));
             Height = (int)(size.Height * .092);
             Width = (int)(size.Width * .444);
-            MaxWidth = (int)(size.Width * .444);
+            MaxWidth = (int)(size.Width * .88);
             ViewModel?.SetTradeSize((int)(size.Height * .092 - ButtonRemoveAllTrades.Height));
             // Panel.Width = 0;
         }

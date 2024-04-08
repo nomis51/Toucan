@@ -22,7 +22,8 @@
         Loaded="OnLoaded">
     <Grid RowDefinitions="*"
           ColumnDefinitions="*,*"
-          Background="DarkRed">
+          HorizontalAlignment="Stretch"
+          VerticalAlignment="Stretch">
         <Button x:Name="ButtonRemoveAllTrades"
                 Grid.Row="0"
                 Grid.Column="0"
@@ -30,7 +31,8 @@
                 HorizontalAlignment="Left"
                 Height="25"
                 Width="25"
-                Classes="hoverError" Click="ButtonRemoveAllTrades_OnClick">
+                Classes="hoverError"
+                Click="ButtonRemoveAllTrades_OnClick">
             <Button.Content>
                 <icons:MaterialIcon Kind="Trash"
                                     Foreground="{StaticResource TextColor}" />
@@ -40,25 +42,29 @@
         <Panel x:Name="TradesPanel"
                Grid.Row="0"
                Grid.Column="1"
-               Background="Blue"
                HorizontalAlignment="Stretch"
                VerticalAlignment="Stretch">
             <ScrollViewer x:Name="ScrollViewer"
                           HorizontalAlignment="Stretch"
+                          VerticalAlignment="Stretch"
                           VerticalScrollBarVisibility="Disabled"
                           HorizontalScrollBarVisibility="Hidden"
                           PointerWheelChanged="ScrollViewer_OnPointerWheelChanged">
-                <ItemsRepeater ItemsSource="{Binding Trades}">
-                    <ItemsRepeater.Layout>
-                        <StackLayout Orientation="Horizontal"
-                                     Spacing="5" />
-                    </ItemsRepeater.Layout>
-                    <ItemsRepeater.ItemTemplate>
+                <ItemsControl ItemsSource="{Binding Trades}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Spacing="3"
+                                        Orientation="Horizontal"
+                                        HorizontalAlignment="Left"
+                                        VerticalAlignment="Bottom" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
                         <DataTemplate x:DataType="viewModels:IncomingTradeViewModel">
                             <views:IncomingTradeView Content="{Binding .}" />
                         </DataTemplate>
-                    </ItemsRepeater.ItemTemplate>
-                </ItemsRepeater>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
             </ScrollViewer>
         </Panel>
     </Grid>

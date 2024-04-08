@@ -9,34 +9,49 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Avalonia" Version="11.0.10" />
-        <PackageReference Include="Avalonia.Controls.ItemsRepeater" Version="11.0.10" />
-        <PackageReference Include="Avalonia.Desktop" Version="11.0.10" />
-        <PackageReference Include="Avalonia.Fonts.Inter" Version="11.0.10" />
+        <PackageReference Include="Avalonia.Controls.ItemsRepeater" Version="11.0.10"/>
+        <PackageReference Include="Avalonia.Desktop" Version="11.0.10"/>
+        <PackageReference Include="Avalonia.Fonts.Inter" Version="11.0.10"/>
         <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
-        <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="11.0.10" />
-        <PackageReference Include="Avalonia.ReactiveUI" Version="11.0.10" />
-        <PackageReference Include="Avalonia.Themes.Fluent" Version="11.0.10" />
-        <PackageReference Include="Deadpikle.AvaloniaProgressRing" Version="0.10.6" />
-        <PackageReference Include="Material.Icons.Avalonia" Version="2.1.0" />
+        <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="11.0.10"/>
+        <PackageReference Include="Avalonia.ReactiveUI" Version="11.0.10"/>
+        <PackageReference Include="Avalonia.Themes.Fluent" Version="11.0.10"/>
+        <PackageReference Include="Deadpikle.AvaloniaProgressRing" Version="0.10.6"/>
+        <PackageReference Include="Material.Icons.Avalonia" Version="2.1.0"/>
+        <PackageReference Include="Microsoft.Windows.Compatibility" Version="8.0.3"/>
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Menagerie.Core\Menagerie.Core.csproj" />
+        <ProjectReference Include="..\Menagerie.Core\Menagerie.Core.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
-        <AvaloniaResource Include="Assets\**" />
+        <AvaloniaResource Include="Assets\**"/>
     </ItemGroup>
-    
+
     <ItemGroup>
-      <None Remove="Assets\logo.ico" />
-      <Content Include="Assets\logo.ico">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </Content>
-      <None Remove="Assets\logo.png" />
-      <Content Include="Assets\logo.png">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </Content>
+        <None Remove="Assets\logo.ico"/>
+        <Content Include="Assets\logo.ico">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
+        <None Remove="Assets\logo.png"/>
+        <Content Include="Assets\logo.png">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Remove="Assets\Audio\click.wav"/>
+        <Content Include="Assets\Audio\click.wav">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
+        <None Remove="Assets\Audio\newTradeNotification.wav"/>
+        <Content Include="Assets\Audio\newTradeNotification.wav">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
+        <None Remove="Assets\Audio\playerJoinedNotification.wav"/>
+        <Content Include="Assets\Audio\playerJoinedNotification.wav">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
     </ItemGroup>
 </Project>

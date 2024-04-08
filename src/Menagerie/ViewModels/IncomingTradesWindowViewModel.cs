@@ -1,6 +1,10 @@
+using System;
 using System.Collections.ObjectModel;
+using System.Linq;
 using Menagerie.Core.Models.Trading;
 using Menagerie.Core.Services;
+using Menagerie.Enums;
+using Menagerie.Services;
 using ReactiveUI;
 
 namespace Menagerie.ViewModels;
@@ -31,7 +35,7 @@ public class IncomingTradesWindowViewModel : ViewModelBase
         Trades.Clear();
         this.RaisePropertyChanged(nameof(Trades));
     }
-    
+
     public void SetTradeSize(int size)
     {
         _tradeSize = size;
@@ -43,7 +47,22 @@ public class IncomingTradesWindowViewModel : ViewModelBase
 
     private void AppService_OnNewIncomingTrade(IncomingTrade trade)
     {
-        Trades.Add(new IncomingTradeViewModel(trade, _tradeSize));
+        var vm = new IncomingTradeViewModel(trade, _tradeSize);
+        vm.OnRemoved += RemoveTrade;
+
+        Trades.Add(vm);
+        AudioService.Instance.PlayEffect(AudioEffect.NewTrade);
+
+        this.RaisePropertyChanged(nameof(Trades));
+    }
+
+    private void RemoveTrade(Guid id)
+    {
+        var vm = Trades.FirstOrDefault(t => t.Trade.Id == id);
+        if (vm is null) return;
+
+        vm.OnRemoved -= RemoveTrade;
+        Trades.Remove(vm);
         this.RaisePropertyChanged(nameof(Trades));
     }
 

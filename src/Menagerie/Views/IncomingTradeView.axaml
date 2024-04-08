@@ -5,6 +5,7 @@
              xmlns:viewModels="clr-namespace:Menagerie.ViewModels"
              xmlns:incomingTradeViewModels="clr-namespace:Menagerie.Models.IncomingTradeViewModels"
              xmlns:icons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+             xmlns:effects="clr-namespace:Menagerie.Effects"
              mc:Ignorable="d"
              x:Class="Menagerie.Views.IncomingTradeView"
              x:DataType="viewModels:IncomingTradeViewModel"
@@ -60,78 +61,83 @@
             </ItemsRepeater>
         </ToolTip.Tip>
 
-        <Grid RowDefinitions="Auto,*,Auto"
-              ColumnDefinitions="*,*">
-            <Border Grid.Row="0"
-                    Grid.Column="0"
-                    Grid.ColumnSpan="2"
-                    CornerRadius="0,0,0,0"
-                    BorderBrush="{StaticResource Background0}"
-                    BorderThickness="1"
-                    Background="{StaticResource Background0}"
-                    HorizontalAlignment="Stretch">
-                <TextBlock Foreground="{StaticResource TextColor}"
-                           TextAlignment="Center"
-                           VerticalAlignment="Center"
-                           TextWrapping="NoWrap"
-                           TextTrimming="CharacterEllipsis"
-                           Text="{Binding Trade.Item}" />
-            </Border>
+        <effects:RippleEffect>
+            <effects:RippleEffect.Template>
+                <ControlTemplate>
+                    <Grid RowDefinitions="Auto,*,Auto"
+                          ColumnDefinitions="*,*">
+                        <Border Grid.Row="0"
+                                Grid.Column="0"
+                                Grid.ColumnSpan="2"
+                                CornerRadius="0,0,0,0"
+                                BorderBrush="{StaticResource Background0}"
+                                BorderThickness="1"
+                                Background="{StaticResource Background0}"
+                                HorizontalAlignment="Stretch">
+                            <TextBlock Foreground="{StaticResource TextColor}"
+                                       TextAlignment="Center"
+                                       VerticalAlignment="Center"
+                                       TextWrapping="NoWrap"
+                                       TextTrimming="CharacterEllipsis"
+                                       Text="{Binding Trade.Item}" />
+                        </Border>
 
-            <Image Grid.Row="1"
-                   Grid.Column="0"
-                   Grid.ColumnSpan="2"
-                   Source="{Binding Trade.Price.CurrencyImage^}"
-                   Stretch="Uniform"
-                   VerticalAlignment="Center"
-                   HorizontalAlignment="Center" />
-            <TextBlock Grid.Row="1"
-                       Grid.Column="0"
-                       Grid.ColumnSpan="2"
-                       HorizontalAlignment="Right"
-                       VerticalAlignment="Bottom"
-                       Text="{Binding Trade.Price.Value}"
-                       FontSize="{Binding PriceQuantityFontSize}"
-                       RenderTransform="{Binding PriceQuantityTransform}"
-                       Foreground="{StaticResource TextColor}" />
+                        <Image Grid.Row="1"
+                               Grid.Column="0"
+                               Source="{Binding CurrencyImage^}"
+                               Stretch="Uniform"
+                               VerticalAlignment="Center"
+                               HorizontalAlignment="Center" />
+                        <TextBlock Grid.Row="1"
+                                   Grid.Column="{Binding PriceQuantityColumn}"
+                                   Grid.ColumnSpan="{Binding PriceQuantityColspan}"
+                                   HorizontalAlignment="{Binding PriceQuantityHorizontalAlignment}"
+                                   VerticalAlignment="Center"
+                                   Text="{Binding Trade.Price.Value}"
+                                   FontSize="{Binding PriceQuantityFontSize}"
+                                   Foreground="{StaticResource TextColor}" />
 
-            <Button x:Name="ButtonBusy"
-                    IsVisible="{Binding CanSayBusy}"
-                    Grid.Row="2"
-                    Grid.Column="0"
-                    Classes="hoverAccent actionButton"
-                    Click="ButtonBusy_OnClick">
-                <Button.Content>
-                    <icons:MaterialIcon Kind="Clock" />
-                </Button.Content>
-            </Button>
-            <Button x:Name="ButtonReInvitePlayer"
-                    IsVisible="{Binding !CanSayBusy}"
-                    Grid.Row="2"
-                    Grid.Column="0"
-                    Classes="hoverSuccess actionButton"
-                    Click="ButtonReInvitePlayer_OnClick">
-                <Button.Content>
-                    <icons:MaterialIcon Kind="UserAdd" />
-                </Button.Content>
-            </Button>
-            <Button x:Name="ButtonDenyOffer"
-                    Grid.Row="2"
-                    Grid.Column="1"
-                    Classes="hoverError actionButton"
-                    Click="ButtonDenyOffer_OnClick">
-                <Button.Content>
-                    <icons:MaterialIcon Kind="CloseCircle" />
-                </Button.Content>
-            </Button>
-
-            <icons:MaterialIcon Grid.Row="1"
+                        <Button x:Name="ButtonBusy"
+                                IsVisible="{Binding CanSayBusy}"
+                                Grid.Row="2"
+                                Grid.Column="0"
+                                Classes="hoverAccent actionButton"
+                                Click="ButtonBusy_OnClick">
+                            <Button.Content>
+                                <icons:MaterialIcon Kind="Clock" />
+                            </Button.Content>
+                        </Button>
+                        <Button x:Name="ButtonReInvitePlayer"
+                                IsVisible="{Binding !CanSayBusy}"
+                                Grid.Row="2"
+                                Grid.Column="0"
+                                Classes="hoverSuccess actionButton"
+                                Click="ButtonReInvitePlayer_OnClick">
+                            <Button.Content>
+                                <icons:MaterialIcon Kind="UserAdd" />
+                            </Button.Content>
+                        </Button>
+                        <Button x:Name="ButtonDenyOffer"
+                                Grid.Row="2"
                                 Grid.Column="1"
-                                IsVisible="{Binding IsPlayerInTheArea}"
-                                Kind="UserCircle"
-                                HorizontalAlignment="Right"
-                                VerticalAlignment="Bottom"
-                                Foreground="{StaticResource WarningColor}" />
-        </Grid>
+                                Classes="hoverError actionButton"
+                                Click="ButtonDenyOffer_OnClick">
+                            <Button.Content>
+                                <icons:MaterialIcon Kind="CloseCircle" />
+                            </Button.Content>
+                        </Button>
+
+                        <icons:MaterialIcon Grid.Row="1"
+                                            Grid.Column="0"
+                                            Grid.ColumnSpan="2"
+                                            IsVisible="{Binding IsPlayerInTheArea}"
+                                            Kind="UserCircle"
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Bottom"
+                                            Foreground="{StaticResource WarningColor}" />
+                    </Grid>
+                </ControlTemplate>
+            </effects:RippleEffect.Template>
+        </effects:RippleEffect>
     </Border>
 </UserControl>

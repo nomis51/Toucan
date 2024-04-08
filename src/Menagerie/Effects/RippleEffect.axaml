@@ -1,0 +1,12 @@
+﻿<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:cc="clr-namespace:Menagerie.Effects">
+    <!-- Add Resources Here -->
+    <ControlTheme x:Key="{x:Type cc:RippleEffect}"
+                  TargetType="cc:RippleEffect"
+                  BasedOn="{StaticResource {x:Type ContentControl}}">
+        <Style Selector="^:not(.no-transitions)">
+            <Setter Property="UseTransitions" Value="True"/>
+        </Style>
+    </ControlTheme>
+</ResourceDictionary>

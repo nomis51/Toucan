@@ -19,12 +19,13 @@ public class SettingsService : ISettingsService
     {
         try
         {
-            return await File.ReadAllTextAsync(
-                    Path.Join(
-                        AppService.Instance.GetAppFolder(),
-                        SettingsFileName
-                    )
-                )
+            var path = Path.Join(
+                AppService.Instance.GetAppFolder(),
+                SettingsFileName
+            );
+            if (!File.Exists(path)) return new Settings();
+
+            return await File.ReadAllTextAsync(path)
                 .ContinueWith(x => JsonConvert.DeserializeObject<Settings>(x.Result) ?? new Settings());
         }
         catch (Exception e)

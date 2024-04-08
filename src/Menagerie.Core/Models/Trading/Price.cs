@@ -12,7 +12,7 @@ public class Price
     public string Currency { get; set; } = string.Empty;
 
     [JsonProperty("currencyImageUrl")]
-    public Task<Bitmap?> CurrencyImage { get; set; } = null!;
+    public string CurrencyImageUrl { get; set; }
 
     public Price()
     {

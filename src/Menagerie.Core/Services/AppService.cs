@@ -158,14 +158,14 @@ public class AppService
 
     public void NewIncomingTradeReceived(IncomingTrade trade)
     {
-        trade.Price.CurrencyImage = ImageHelper.LoadFromWeb(CurrencyHelper.GetCurrencyImageLink(trade.Price.Currency));
+        trade.Price.CurrencyImageUrl = CurrencyHelper.GetCurrencyImageLink(trade.Price.Currency);
         // TODO: price conversions
         NewIncomingTradeEventInvoke(trade);
     }
 
     public void NewOutgoingTradeReceived(OutgoingTrade trade)
     {
-        trade.Price.CurrencyImage = ImageHelper.LoadFromWeb(CurrencyHelper.GetCurrencyImageLink(trade.Price.Currency));
+        trade.Price.CurrencyImageUrl = CurrencyHelper.GetCurrencyImageLink(trade.Price.Currency);
         // TODO: price conversions
 
         NewOutgoingTradeEventInvoke(trade);
@@ -212,9 +212,16 @@ public class AppService
         _ = _gameChatService.SendTradeRequest(trade);
     }
 
-    public void SendThanksWhisper(Trade trade)
+    public void SendThanksWhisper(Trade trade, bool kick = false)
     {
-        _ = _gameChatService.SendThanksWhisper(trade);
+        Task.Run(async () =>
+        {
+            await _gameChatService.SendThanksWhisper(trade);
+            if (kick)
+            {
+                _gameChatService.SendKick(trade);
+            }
+        });
     }
 
     #endregion
