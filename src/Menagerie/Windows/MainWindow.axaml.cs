@@ -52,11 +52,17 @@ public partial class MainWindow : WindowBase<MainWindowViewModel>
         {
             if (isVisible)
             {
-                _incomingTradesWindow.Show(this);
+                if (!_incomingTradesWindow.IsVisible)
+                {
+                    _incomingTradesWindow.Show(this);
+                }
             }
             else
             {
-                _incomingTradesWindow.Hide();
+                if (_incomingTradesWindow.IsVisible)
+                {
+                    _incomingTradesWindow.Hide();
+                }
             }
         });
     }

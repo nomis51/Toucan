@@ -75,6 +75,7 @@
                                 Background="{StaticResource Background0}"
                                 HorizontalAlignment="Stretch">
                             <TextBlock Foreground="{StaticResource TextColor}"
+                                       FontSize="12"
                                        TextAlignment="Center"
                                        VerticalAlignment="Center"
                                        TextWrapping="NoWrap"

@@ -21,8 +21,9 @@ public class Item
 
         if (parts.Length > 1)
         {
-            Quantity = int.TryParse(parts[0], out var quantity) ? quantity : 1;
-            Name = string.Join(" ", parts.Skip(1));
+            var ok = int.TryParse(parts[0], out var quantity);
+            Quantity = ok ? quantity : 1;
+            Name = ok ? string.Join(" ", parts.Skip(1)) : text;
         }
         else
         {
@@ -32,6 +33,6 @@ public class Item
 
     public override string ToString()
     {
-        return $"{Quantity} {Name}";
+        return Quantity <= 1 ? Name : $"{Quantity} {Name}";
     }
 }
