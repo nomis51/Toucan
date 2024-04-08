@@ -1,8 +1,10 @@
 using System.Runtime.InteropServices;
 using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Input;
 using Avalonia.Interactivity;
+using Menagerie.Core.Services;
 using Menagerie.Core.WinApi;
 using Menagerie.ViewModels;
 
@@ -15,9 +17,6 @@ public partial class IncomingTradesWindow : WindowBase<IncomingTradesWindowViewM
     public IncomingTradesWindow()
     {
         InitializeComponent();
-
-        // TitleBar.ExtendsContentIntoTitleBar = true;
-        // TitleBar.TitleBarHitTestType = TitleBarHitTestType.Simple;
     }
 
     #endregion
@@ -26,6 +25,7 @@ public partial class IncomingTradesWindow : WindowBase<IncomingTradesWindowViewM
 
     private void OnLoaded(object? sender, RoutedEventArgs e)
     {
+        AppService.Instance.AddOverlayWindowHandle(GetTopLevel(this)!.TryGetPlatformHandle()!.Handle);
         AdjustPosition();
     }
 
@@ -85,6 +85,6 @@ public partial class IncomingTradesWindow : WindowBase<IncomingTradesWindowViewM
     {
         ViewModel?.RemoveAllTrades();
     }
-
+   
     #endregion
 }

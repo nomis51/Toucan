@@ -7,4 +7,5 @@ public interface IGameProcessService
 
     bool FocusGameWindow();
     Task FindProcess();
+    void AddOverlayWindowHandle(IntPtr handle);
 }

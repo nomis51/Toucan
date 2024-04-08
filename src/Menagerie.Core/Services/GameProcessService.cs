@@ -24,6 +24,12 @@ public class GameProcessService : IGameProcessService
 
     #endregion
 
+    #region Members
+
+    private readonly List<IntPtr> _overlayWindowsHandles = new();
+
+    #endregion
+
     #region Props
 
     public string ProcessLocation { get; private set; } = string.Empty;
@@ -32,6 +38,12 @@ public class GameProcessService : IGameProcessService
     #endregion
 
     #region Public methods
+
+    public void AddOverlayWindowHandle(IntPtr handle)
+    {
+        if (handle == IntPtr.Zero) return;
+        _overlayWindowsHandles.Add(handle);
+    }
 
     public Task FindProcess()
     {
@@ -52,6 +64,7 @@ public class GameProcessService : IGameProcessService
 
                         ProcessId = process.Id;
                         WatchProcess();
+                        AutoHideOverlay();
 
                         AppService.Instance.GameProcessFound();
                         return;
@@ -101,6 +114,44 @@ public class GameProcessService : IGameProcessService
     #endregion
 
     #region Private methods
+
+    private void AutoHideOverlay()
+    {
+        new Thread(() =>
+            {
+                while (true)
+                {
+                    Thread.Sleep(500);
+
+                    try
+                    {
+                        if (IsGameWindowFocused() || IsOverlayFocused())
+                        {
+                            AppService.OverlayVisibilityChangedEventInvoke(true);
+                        }
+                        else
+                        {
+                            AppService.OverlayVisibilityChangedEventInvoke(false);
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        Log.Warning("Unable to show/hide overlay: {Message} {Callstack}", e.Message, e.StackTrace);
+                    }
+                }
+            })
+            {
+                IsBackground = true
+            }
+            .Start();
+    }
+
+    private bool IsOverlayFocused()
+    {
+        var focusedHandle = User32.GetForegroundWindow();
+        return _overlayWindowsHandles.Any(handle => focusedHandle == handle);
+    }
+
 
     private void WatchProcess()
     {

@@ -15,7 +15,7 @@ public partial class MainWindow : WindowBase<MainWindowViewModel>
     };
 
     #endregion
-    
+
     #region Constructors
 
     public MainWindow()
@@ -36,12 +36,29 @@ public partial class MainWindow : WindowBase<MainWindowViewModel>
         windowStyle |= User32.WS_EX_TOOLWINDOW;
         _ = User32.SetWindowLong(hwnd, User32.GWL_EX_STYLE, windowStyle);
     }
-    
+
     private void OnLoaded(object? sender, RoutedEventArgs e)
     {
+        ViewModel!.OnOverlayVisibilityChangedEvent += OnOverlayVisibilityChangedEvent;
+
         AdjustWindow();
-        
+
         _incomingTradesWindow.Show(this);
+    }
+
+    private void OnOverlayVisibilityChangedEvent(bool isVisible)
+    {
+        InvokeUi(() =>
+        {
+            if (isVisible)
+            {
+                _incomingTradesWindow.Show(this);
+            }
+            else
+            {
+                _incomingTradesWindow.Hide();
+            }
+        });
     }
 
     #endregion

@@ -85,6 +85,15 @@ public class AppService
     public static void LocationUpdatedEventInvoke(string location) => OnLocationUpdated?.Invoke(location);
 
     #endregion
+    
+    #region OverlayVisibilityChanged
+
+    public delegate void OverlayVisibilityChangedEvent(bool isVisible);
+
+    public static event OverlayVisibilityChangedEvent? OnOverlayVisibilityChangedEvent;
+    public static void OverlayVisibilityChangedEventInvoke(bool isVisible) => OnOverlayVisibilityChangedEvent?.Invoke(isVisible);
+
+    #endregion
 
     #endregion
 
@@ -112,6 +121,11 @@ public class AppService
 
         LogsHelper.Initialize();
         _ = _gameProcessService.FindProcess();
+    }
+
+    public void AddOverlayWindowHandle(IntPtr handle)
+    {
+        _gameProcessService.AddOverlayWindowHandle(handle);
     }
 
     public Task<Settings> GetSettings()
