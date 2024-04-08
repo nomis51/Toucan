@@ -61,7 +61,7 @@
             </ItemsRepeater>
         </ToolTip.Tip>
 
-        <effects:RippleEffect>
+        <effects:RippleEffect RippleFill="{StaticResource TextColor}">
             <effects:RippleEffect.Template>
                 <ControlTemplate>
                     <Grid RowDefinitions="Auto,*,Auto"
